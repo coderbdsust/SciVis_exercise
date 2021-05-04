@@ -1,0 +1,1 @@
+set(LOCAL_BUILD_DIR "D:/TUD-Semester/SS21/Scientific-Visualization/Exercise/SciVis_exercise0/framework/out/build/x64-Debug/build")
