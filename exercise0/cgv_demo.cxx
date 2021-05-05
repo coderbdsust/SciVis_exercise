@@ -5,7 +5,7 @@
 // The main file of the plugin. It defines a class that demonstrates how to register with
 // the scene graph, drawing primitives, creating a GUI, using a config file and various
 // other parts of the framework.
-
+// 
 // Framework core
 #include <cgv/base/register.h>
 #include <cgv/gui/provider.h>
