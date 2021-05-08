@@ -114,7 +114,7 @@ public:
 		  )),
 		  texture("uint8[R,G,B,A]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR),
 		  fb_bgcolor_r(0.9f), fb_bgcolor_g(0.9f), fb_bgcolor_b(0.9f),
-		  bgcolor(fb_bgcolor_r, fb_bgcolor_g, fb_bgcolor_b), draw_backside(true)
+		  bgcolor(fb_bgcolor_r, fb_bgcolor_g, fb_bgcolor_b), draw_backside(false), draw_quad(true)
 	{}
 
 	// Should be overwritten to sensibly implement the cgv::base::named interface
