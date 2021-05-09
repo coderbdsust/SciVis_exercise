@@ -380,12 +380,14 @@ public:
 		// - create buffer objects
 		success = vb.create(ctx, &(vertices[0]), vertices.size()) && success;
 		success = vertex_array.create(ctx) && success;
+
 		success = vertex_array.set_attribute_array(
 			ctx, default_shader.get_position_index(), vec3type, vb,
 			0, // position is at start of the struct <-> offset = 0
 			vertices.size(), // number of position elements in the array
 			sizeof(vertex) // stride from one element to next
 		) && success;
+
 		success = vertex_array.set_attribute_array(
 			ctx, default_shader.get_texcoord_index(), vec2type, vb,
 			sizeof(cgv::render::render_types::vec3), // tex coords follow after position
