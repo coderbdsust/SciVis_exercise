@@ -153,6 +153,8 @@ protected:
 
     /*<your-ui-elements-here>*/
     //@}
+    double depth;
+    double z0;
 
     /**@name noise */
     /// selected noise type
@@ -206,6 +208,9 @@ public:
         anaglyph_mode = AM_TRUE;
 
         /*<your-code-here>*/
+        //depth = max_depth - min_depth;
+       
+
 
         noise_type = NT_COLORED_SPECKLE;
         speckle_percentage = 0.05f;
@@ -535,8 +540,8 @@ public:
             int tex_idx = prog.get_texcoord_index();
             attribute_array_binding::enable_global_array(ctx, pos_idx);
             attribute_array_binding::enable_global_array(ctx, tex_idx);
-                attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
-                attribute_array_binding::set_global_attribute_array(ctx, tex_idx, T);
+            attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
+            attribute_array_binding::set_global_attribute_array(ctx, tex_idx, T);
 
                 // enable shader program and draw the rectangle
                 prog.enable(ctx);
@@ -615,6 +620,9 @@ public:
         unsigned h = ctx.get_height() / indirect_resolution_divisor;
         glViewport(0, 0, w, h);
 
+        depth = eye_separation;
+        z0 = parallax_zero_depth;
+
         mat4 MVP[2];
         // render scene for each view to the corresponding framebuffer
         for (int i = 0; i < 2; ++i) {
@@ -639,16 +647,67 @@ public:
                   with ctx.set_projection_matrix() and ctx.set_modelview_matrix(). You can get the
                   currently set matrices with ctx.get_projection_matrix() and ctx.get_modelview_matrix().
                   You can use fmat<float, 4, 4> for matrix computations.
+
 			      You may have a look at the variables: eye, eye_separation, screen_width, screen_height,
 					parallax_zero_depth, z_near, z_far.
+
              tasks 1.1.b:  cyclopic lighting
                   Instead of using the lighting from both eye positions, set the correct projection and modelview
                   matriices for cyclopic lighting.
                   Use the variable 'cyclopic_lighting' to make it switch between both lightings */
 
              /*<your_code_here>*/
-
+           
             /***********************************************************************************/
+           
+            int l_eye = -1;
+            int r_eye = 1;
+            int b = -1;
+            int t = 1;
+            double n = z_near;
+            double f = z_far;
+            
+
+            fmat<float, 4, 4> P = ctx.get_projection_matrix();
+            fmat<float, 4, 4> M = ctx.get_modelview_matrix();
+
+            P[0] = (2*n)/(r_eye-l_eye);
+
+            P[2] = (r_eye + l_eye) / (r_eye - l_eye);
+
+            P[5] = (2 * n) / (t - b);
+
+            P[6] = (t + b) / (t - b);
+
+            P[10] = (n + f) / (n - f);
+
+            P[11] = (2 * n * f) / (n - f);
+
+            P[14] = -1;
+            
+            fmat<float, 4, 4> S, T;
+
+            T.zeros();
+
+            S.zeros();
+
+            S[0] = S[5] = S[10] = S[15] = 1;
+
+            S[2] = eye * (0.5 * depth) / z0;
+
+            T[0] = T[5] = T[10] = T[15] = 1;
+
+            T[3] = eye * 0.5 * depth;
+
+            if (cyclopic_lighting) {
+              P = P * T;
+            }else {
+              M = T * M;
+            }
+            
+           ctx.set_projection_matrix(P);
+
+           ctx.set_modelview_matrix(M);
 
             // store per eye modelview projection matrix to hand over to finalization pass
             MVP[i] = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
@@ -730,11 +789,10 @@ public:
               Exchange the inderect_two_pass_stereo() method with a one pass rendering method */
 
          /*<your_code_here>*/
-
         /***********************************************************************************/
-
         // if stereo is enabled a multi pass rendering is done
-        indirect_two_pass_stereo(ctx);
+        if(enabled)
+            indirect_two_pass_stereo(ctx);
 
         // renders spheres representing the eye seperation
         if (show_spheres)

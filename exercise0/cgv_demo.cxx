@@ -334,7 +334,7 @@ public:
 
 		// < Your code here >
 		// ... and for the toggling drawing the quad.
-		add_member_control(this, "Draw quad", draw_quad);
+		add_member_control(this, "Draw Quad", draw_quad);
 
 		/// [END] Task 0.1
 		///*****************************************************************************/
