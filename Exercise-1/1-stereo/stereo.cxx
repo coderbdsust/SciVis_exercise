@@ -153,8 +153,6 @@ protected:
 
 	/*<your-ui-elements-here>*/
 	//@}
-	double depth;
-	double z0;
 
 	/**@name noise */
 	/// selected noise type
@@ -209,8 +207,6 @@ public:
 
 		/*<your-code-here>*/
 		//depth = max_depth - min_depth;
-
-
 
 		noise_type = NT_COLORED_SPECKLE;
 		speckle_percentage = 0.05f;
@@ -621,8 +617,8 @@ public:
 		unsigned h = ctx.get_height() / indirect_resolution_divisor;
 		glViewport(0, 0, w, h);
 
-		depth = eye_separation;
-		z0 = parallax_zero_depth;
+		double d = eye_separation;
+		double z0 = parallax_zero_depth;
 
 		mat4 MVP[2];
 		// render scene for each view to the corresponding framebuffer
@@ -656,9 +652,7 @@ public:
 				  Instead of using the lighting from both eye positions, set the correct projection and modelview
 				  matriices for cyclopic lighting.
 				  Use the variable 'cyclopic_lighting' to make it switch between both lightings */
-
 				  /*<your_code_here>*/
-
 				 /***********************************************************************************/
 
 			float h = screen_height;
@@ -666,14 +660,14 @@ public:
 			float n = z_near;
 			float f = z_far;
 
-			float t = h * (n / z0);
-			float b = eye * t;
+			float t = 0.5 * h * (n / z0);
+			float b = -1 * t;
 			float r = 0.5 * w * (n / z0);
 			float l = eye * r;
 
-			float translation = 0.5 * depth * w * (n / z0);
-			r = r + translation;
-			l = l + translation;
+			float translation = 0.5 * d * w * (n / z0);
+			r = r +  translation;
+			l = l +  translation;
 
 			fmat<float, 4, 4> P = ctx.get_projection_matrix();
 			fmat<float, 4, 4> M = ctx.get_modelview_matrix();
@@ -687,15 +681,11 @@ public:
 			P[11] = (2 * n * f) / (n - f);
 			P[14] = -1;
 
-			fmat<float, 4, 4> S, T;
+			fmat<float, 4, 4>  T;
 			T.zeros();
-			S.zeros();
-
-			S[0] = S[5] = S[10] = S[15] = 1;
-			S[2] = eye * (0.5 * depth) / z0;
 
 			T[0] = T[5] = T[10] = T[15] = 1;
-			T[3] = eye * 0.5 * depth;
+			T[3] = eye * 0.5 * d;
 
 			if (cyclopic_lighting) {
 				P = P * T;
