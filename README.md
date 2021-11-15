@@ -42,8 +42,8 @@ We use `@Git` for versioning.
 
 ## Authors
 
-* **Stefan gumhold** - *Initial work*
-* **Biswajit Debnath** - *Assignment work*
+* [Prof. Dr. rer. nat. Stefan Gumhold](https://tu-dresden.de/ing/informatik/smt/cgv/die-professur/inhaber-in "Prof. Dr. rer. nat. Stefan Gumhold's Profile") - *Initial work*
+* [Biswajit Debnath](https://www.linkedin.com/in/coderbd/ "Biswajit Debnath's LinkedIn Profile") - *Assignment work*
 
 ## License & Documentation
 
